@@ -20,6 +20,7 @@ type Config struct {
 	SERVER_PATH         string
 	CENTER_LOG_PATH		string
 	SERVER_LOG_PATH		string
+	CENTER_ADDR			string
 	TIME_FLAG			string
 
 	PARTNER_KEY			string

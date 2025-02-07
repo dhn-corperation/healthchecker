@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func SendAlimtalk(phn string){
+func SendAlimtalk(phn, types string){
 	var startNow = time.Now()
 	var serial_number = fmt.Sprintf("%04d%02d%02d-", startNow.Year(), startNow.Month(), startNow.Day())
 
@@ -42,7 +42,7 @@ func SendAlimtalk(phn string){
 
 	alimtalk.Message = `웹 대기 발생
 플랫폼 : 건강보험심사평가원
-매장명 : 없음
+매장명 : ` + types + `
 발송시각 : 없음
 발송종류 : 없음
 발송번호 : 없음
@@ -63,7 +63,7 @@ func SendAlimtalk(phn string){
 
 func sendKakaoAlimtalk(alimtalk Alimtalk) {
 
-	resp, err := cf.Client.R().
+	_, err := cf.Client.R().
 		SetHeaders(map[string]string{"Content-Type": "application/json"}).
 		SetBody(alimtalk).
 		Post(cf.Conf.API_SERVER + "/v3/" + cf.Conf.PARTNER_KEY + "/alimtalk/send")
@@ -71,7 +71,7 @@ func sendKakaoAlimtalk(alimtalk Alimtalk) {
 	if err != nil {
 		cf.Stdlog.Println("alimtalk server request error : ", err, " / serial_number : ", alimtalk.Serial_number)
 	} else {
-		cf.Stdlog.Println(string(resp.StatusCode()))
-		cf.Stdlog.Println(string(resp.Body()))
+		// cf.Stdlog.Println(string(resp.StatusCode()))
+		// cf.Stdlog.Println(string(resp.Body()))
 	}
 }
