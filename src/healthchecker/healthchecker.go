@@ -16,7 +16,7 @@ import(
 )
 
 const (
-	name        = "DHNHealthcheck"
+	name        = "DHNHealthchecker"
 	description = "대형네트웍스 센터, 서버 헬스체커"
 	certEmail   = "dhn@dhncorp.co.kr"
 )
@@ -111,13 +111,16 @@ func logChecker(logPath, timeFlag string) {
 	preCenterLogString := ""
 	curCenterLogString := ""
 
+	sunCnt := 0
+	maxCnt := 5
+
 	for {
 		preCenterLogString = curCenterLogString
 
 		now := time.Now()                  // 현재 시간 가져오기
 		logDate := now.Format("2006-01-02") // 기본 날짜 (오늘 날짜)
 
-		if (now.Hour() < 8 || now.Hour() > 22) && strings.EqualFold(timeFlag, "Y") {
+		if (now.Hour() < 8 || now.Hour() >= 22) && strings.EqualFold(timeFlag, "Y") {
 			time.Sleep(1 * time.Minute)
 			continue
 		}
@@ -139,10 +142,21 @@ func logChecker(logPath, timeFlag string) {
 
 		curCenterLogString = string(output)
 
-		if strings.EqualFold(preCenterLogString, curCenterLogString){
+		if now.Weekday() <= 0 {
+			if strings.EqualFold(preCenterLogString, curCenterLogString) {
+				sunCnt++
+			} else {
+				sunCnt = 0
+			}
+		} else {
+			sunCnt = maxCnt
+		}
+
+		if strings.EqualFold(preCenterLogString, curCenterLogString) && sunCnt >= maxCnt{
 			send.SendAlimtalk("821093440043", logPath)
 			send.SendAlimtalk("821055537431", logPath)
 			send.SendAlimtalk("821077709980", logPath)
+			sunCnt = 0
 		}
 
 		// 응답 출력
