@@ -165,7 +165,7 @@ func logChecker(logPath, timeFlag string) {
 }
 
 func pingChecker(addr string) {
-	fixCenterString := "Center Server : https://bzm-center.kakao.com/,   Image Server : https://bzm-upload-api.kakao.com/"
+	fixCenterString := "정상 수신 완료 Center Server : https://bzm-center.kakao.com/,   Image Server : https://bzm-upload-api.kakao.com/"
 	curCenterString := ""
 	cnt := 0
 
